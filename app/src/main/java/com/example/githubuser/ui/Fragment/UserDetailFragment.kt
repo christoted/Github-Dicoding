@@ -18,7 +18,7 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
 
         viewModel = (activity as MainActivity).viewModel
 
-        val user = args.user
+        val user = args.githubuser
 
         id_login_user_detail.text = user.login
         id_user_type_detail.text = user.type

@@ -20,7 +20,7 @@
         android:name="com.example.githubuser.ui.Fragment.UserDetailFragment"
         android:label="UserDetailFragment" >
         <argument
-            android:name="user"
-            app:argType="com.example.githubuser.model.UserItem" />
+            android:name="githubuser"
+            app:argType="com.example.githubuser.model.GithubUserItem" />
     </fragment>
 </navigation>

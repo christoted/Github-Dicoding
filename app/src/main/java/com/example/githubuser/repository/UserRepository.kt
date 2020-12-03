@@ -8,5 +8,5 @@ class UserRepository() {
     suspend fun getSomeUser() = RetrofitInstance.api.getSomeUser()
 
     //Search User
-    suspend fun searchUser(loginName: String) = RetrofitInstance.api.searchUser(loginName)
+    suspend fun searchUser(q: String) = RetrofitInstance.api.searchUser(q)
 }

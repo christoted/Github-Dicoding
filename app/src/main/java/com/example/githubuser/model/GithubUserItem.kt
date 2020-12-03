@@ -3,7 +3,7 @@ package com.example.githubuser.model
 import android.os.Parcel
 import android.os.Parcelable
 
-data class UserItem (
+data class GithubUserItem(
     val avatar_url: String?,
     val events_url: String?,
     val followers_url: String?,
@@ -17,6 +17,7 @@ data class UserItem (
     val organizations_url: String?,
     val received_events_url: String?,
     val repos_url: String?,
+    val score: Double,
     val site_admin: Boolean,
     val starred_url: String?,
     val subscriptions_url: String?,
@@ -37,6 +38,7 @@ data class UserItem (
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
+        parcel.readDouble(),
         parcel.readByte() != 0.toByte(),
         parcel.readString(),
         parcel.readString(),
@@ -59,6 +61,7 @@ data class UserItem (
         parcel.writeString(organizations_url)
         parcel.writeString(received_events_url)
         parcel.writeString(repos_url)
+        parcel.writeDouble(score)
         parcel.writeByte(if (site_admin) 1 else 0)
         parcel.writeString(starred_url)
         parcel.writeString(subscriptions_url)
@@ -70,12 +73,12 @@ data class UserItem (
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<UserItem> {
-        override fun createFromParcel(parcel: Parcel): UserItem {
-            return UserItem(parcel)
+    companion object CREATOR : Parcelable.Creator<GithubUserItem> {
+        override fun createFromParcel(parcel: Parcel): GithubUserItem {
+            return GithubUserItem(parcel)
         }
 
-        override fun newArray(size: Int): Array<UserItem?> {
+        override fun newArray(size: Int): Array<GithubUserItem?> {
             return arrayOfNulls(size)
         }
     }

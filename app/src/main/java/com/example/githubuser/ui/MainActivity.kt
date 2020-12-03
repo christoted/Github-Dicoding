@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.githubuser.R
 import com.example.githubuser.adapter.UserAdapter
-import com.example.githubuser.model.UserItem
-import com.example.githubuser.model.UserResponse
 import com.example.githubuser.repository.UserRepository
 import com.example.githubuser.ui.ViewModel.UserViewModel
 import com.example.githubuser.ui.ViewModel.UserViewModelFactory
