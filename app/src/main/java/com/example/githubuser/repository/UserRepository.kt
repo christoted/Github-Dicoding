@@ -16,4 +16,7 @@ class UserRepository() {
     //Get all Followers user
     suspend fun getFollowing(login: String) = RetrofitInstance.api.getFollowing(login)
 
+    //Get all Repository
+    suspend fun getRepository(login: String) = RetrofitInstance.api.getRepo(login)
+
 }

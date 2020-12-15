@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.githubuser.model.GithubFollowerResponse
+import com.example.githubuser.model.GithubRepoResponse
 import com.example.githubuser.model.GithubUserResponse
 import com.example.githubuser.repository.UserRepository
 import com.example.githubuser.util.Resource
@@ -20,6 +21,8 @@ class UserViewModel(
     val showFollowerTotal: MutableLiveData<Resource<GithubFollowerResponse>> = MutableLiveData()
 
     val showFollowingTotal: MutableLiveData<Resource<GithubFollowerResponse>> = MutableLiveData()
+
+    val showRepository : MutableLiveData<Resource<GithubRepoResponse>> = MutableLiveData()
 
     init {
         getSomeUser()
@@ -65,6 +68,20 @@ class UserViewModel(
         }
 
         return Resource.Error(response.message())
+    }
+
+    fun getTotalRepo(login: String) = viewModelScope.launch {
+        val repoResponse = repository.getRepository(login)
+        showRepository.postValue(checkRepoResponse(repoResponse))
+    }
+
+    private fun checkRepoResponse(repoResponse: Response<GithubRepoResponse>) : Resource<GithubRepoResponse> {
+        if ( repoResponse.isSuccessful) {
+            repoResponse.body()?.let {
+                return Resource.Success(it)
+            }
+        }
+        return  Resource.Error("Error")
     }
 
 

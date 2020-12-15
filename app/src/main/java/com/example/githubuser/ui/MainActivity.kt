@@ -7,6 +7,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.githubuser.R
@@ -16,6 +18,7 @@ import com.example.githubuser.ui.ViewModel.UserViewModel
 import com.example.githubuser.ui.ViewModel.UserViewModelFactory
 import com.example.githubuser.util.Resource
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_user_detail.*
 
 class MainActivity : AppCompatActivity() {
 

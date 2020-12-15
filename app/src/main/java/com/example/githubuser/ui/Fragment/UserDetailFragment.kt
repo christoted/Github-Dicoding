@@ -1,19 +1,26 @@
 package com.example.githubuser.ui.Fragment
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.example.githubuser.R
 import com.example.githubuser.model.GithubFollowerItem
+import com.example.githubuser.model.GithubRepoItem
 import com.example.githubuser.model.GithubUserItem
 import com.example.githubuser.ui.MainActivity
 import com.example.githubuser.ui.ViewModel.UserViewModel
 import com.example.githubuser.util.Resource
 import kotlinx.android.synthetic.main.fragment_user_detail.*
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
 
 class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
@@ -23,10 +30,14 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
     private val args: UserDetailFragmentArgs by navArgs()
     val listFollower = ArrayList<GithubFollowerItem>()
     val listFollowing = ArrayList<GithubFollowerItem>()
+    val listRepo = Vector<GithubRepoItem>()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+
 
         viewModel = (activity as MainActivity).viewModel
 
@@ -43,11 +54,32 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
 
         getTotalFollower(user1.login!!)
         getTotalFollowing(user1.login!!)
+        getTotalRepo(user1.login!!)
 
 
         listFollower.clear()
         listFollowing.clear()
+        listRepo.clear()
+
+        val followingFragment: FollowingFragment = FollowingFragment()
+        val followerFragment: FollowerFragment = FollowerFragment()
+
+        setCurrentFragment(followingFragment)
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            when(it.itemId) {
+                R.id.followingFragment -> setCurrentFragment(followingFragment)
+                R.id.followerFragment -> setCurrentFragment(followerFragment)
+            }
+            true
+        }
+
     }
+
+    private fun setCurrentFragment(fragment: Fragment) = fragmentManager?.beginTransaction()?.apply {
+        replace(R.id.flFragment, fragment)
+        commit()
+    }
+
     private fun getTotalFollower(login: String) {
         viewModel.getFollowersTotals(login)
         viewModel.showFollowerTotal.observe(viewLifecycleOwner, Observer { responseTotalFollower ->
@@ -80,6 +112,21 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
                     listFollowing.clear()
                 }
             }
+        })
+    }
+    
+    private fun getTotalRepo(login: String){
+        viewModel.getTotalRepo(login);
+        viewModel.showRepository.observe(viewLifecycleOwner, Observer {ResourceGithubResponses->
+             when(ResourceGithubResponses) {
+                 is Resource.Success -> {
+                     ResourceGithubResponses.data?.let {GithubResponses ->
+                         listRepo.addAll(GithubResponses)
+                         id_repository_user_detail.text = listRepo.size.toString()
+                     }
+                     listRepo.clear()
+                 }
+             }
         })
     }
 }

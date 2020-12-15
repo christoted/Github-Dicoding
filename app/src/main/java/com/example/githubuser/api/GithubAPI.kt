@@ -1,6 +1,7 @@
 package com.example.githubuser.api
 
 import com.example.githubuser.model.GithubFollowerResponse
+import com.example.githubuser.model.GithubRepoResponse
 import com.example.githubuser.model.GithubUserResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -29,5 +30,11 @@ interface GithubAPI {
         @Path("login")
         login : String
     ) : Response<GithubFollowerResponse>
+
+    @GET("users/{login}/repos")
+    suspend fun getRepo(
+        @Path("login")
+        login: String
+    ) : Response<GithubRepoResponse>
 
 }
