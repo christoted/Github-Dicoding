@@ -9,4 +9,11 @@ class UserRepository() {
 
     //Search User
     suspend fun searchUser(q: String) = RetrofitInstance.api.searchUser(q)
+
+    //Get all Followers user
+    suspend fun getFollower(login: String) = RetrofitInstance.api.getFollower(login)
+
+    //Get all Followers user
+    suspend fun getFollowing(login: String) = RetrofitInstance.api.getFollowing(login)
+
 }

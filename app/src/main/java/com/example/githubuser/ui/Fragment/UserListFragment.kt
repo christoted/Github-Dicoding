@@ -63,11 +63,12 @@ class UserListFragment : Fragment(R.layout.fragment_user_list), UserAdapter.User
             false
         })
 
-        
+        githubUsers.clear()
     }
 
     private fun searchUser() {
         userAdapter.users.clear()
+        githubUsers.clear()
         if (id_search_user_fragment_edt_search.text?.isEmpty()!!) {
             Toast.makeText(activity, "isi oy", Toast.LENGTH_SHORT).show()
         } else {
@@ -82,7 +83,6 @@ class UserListFragment : Fragment(R.layout.fragment_user_list), UserAdapter.User
                             githubUsers.addAll(searchResponse.items)
                             userAdapter.notifyDataSetChanged()
                         }
-
 
                     }
                     
@@ -108,6 +108,7 @@ class UserListFragment : Fragment(R.layout.fragment_user_list), UserAdapter.User
 
     override fun onUserItemClick(Position: Int) {
         val user = userAdapter.users[Position]
+        Toast.makeText(activity, "" + user.login, Toast.LENGTH_SHORT).show()
         val bundle = Bundle().apply {
             putParcelable("user", user)
         }

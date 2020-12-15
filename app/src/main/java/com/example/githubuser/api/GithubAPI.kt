@@ -1,8 +1,10 @@
 package com.example.githubuser.api
 
+import com.example.githubuser.model.GithubFollowerResponse
 import com.example.githubuser.model.GithubUserResponse
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GithubAPI {
@@ -15,5 +17,17 @@ interface GithubAPI {
         @Query("q")
         loginName : String
     ) : Response<GithubUserResponse>
+
+    @GET("/users/{login}/followers")
+    suspend fun getFollower(
+        @Path("login")
+        login : String
+    ) : Response<GithubFollowerResponse>
+
+    @GET("/users/{login}/following")
+    suspend fun getFollowing(
+        @Path("login")
+        login : String
+    ) : Response<GithubFollowerResponse>
 
 }
