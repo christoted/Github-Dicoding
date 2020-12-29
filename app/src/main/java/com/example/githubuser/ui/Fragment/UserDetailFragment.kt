@@ -37,24 +37,6 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        setCurrentFragment(FollowingFragment2.newInstance(args.user.login.toString()))
-        bottomNavigationView.setOnNavigationItemSelectedListener {
-            when(it.itemId) {
-                R.id.followingFragment -> {
-                    setCurrentFragment(FollowingFragment2.newInstance(args.user.login.toString()))
-                    Log.d("test-send-data", "onViewCreated: " + args.user.login.toString())
-//                    val bundle = Bundle().apply {
-//                        putString("login", args.user.login)
-//                    }
-                }
-                R.id.followerFragment -> setCurrentFragment(FollowerFragment.newInstance(args.user.login.toString()))
-            }
-            true
-        }
-
-
-
         viewModel = (activity as MainActivity).viewModel
 
         val user: GithubUserItem? = arguments?.getParcelable<GithubUserItem>("user")
@@ -70,8 +52,24 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
             .into(id_profile_image_user_detail)
 
         getTotalFollower(user1.login!!)
-        getTotalFollowing(user1.login!!)
-        getTotalRepo(user1.login!!)
+        getTotalFollowing(user1.login)
+        getTotalRepo(user1.login)
+
+        setCurrentFragment(FollowingFragment2.newInstance(args.user.login.toString()))
+        Log.d("jumlah-data", "onViewCreated jumlah data : $listFollowing")
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            when(it.itemId) {
+                R.id.followingFragment -> {
+                    setCurrentFragment(FollowingFragment2.newInstance(args.user.login.toString()))
+                    Log.d("test-send-data", "onViewCreated: " + args.user.login.toString())
+//                    val bundle = Bundle().apply {
+//                        putString("login", args.user.login)
+//                    }
+                }
+                R.id.followerFragment -> setCurrentFragment(FollowerFragment.newInstance(args.user.login.toString()))
+            }
+            true
+        }
 
 
         listFollower.clear()

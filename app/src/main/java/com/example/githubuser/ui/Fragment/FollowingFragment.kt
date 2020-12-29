@@ -17,7 +17,7 @@ import com.example.githubuser.util.Resource
 import kotlinx.android.synthetic.main.fragment_following.*
 
 private const val ARG_PARAM1 = "param1"
-
+private const val ARG_PARAM2 = "param2"
 
 class FollowingFragment2 : Fragment() {
 
@@ -26,13 +26,12 @@ class FollowingFragment2 : Fragment() {
 
     lateinit var followingAdapter: FollowFollowerAdapter
 
-    private val listFollowing = ArrayList<GithubFollowerItem>()
+    private var listFollowing = ArrayList<GithubFollowerItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             login = it.getString(ARG_PARAM1)
-
         }
     }
 
@@ -43,7 +42,6 @@ class FollowingFragment2 : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_following, container, false)
         listFollowing.clear()
-
         return view
     }
 
@@ -56,8 +54,8 @@ class FollowingFragment2 : Fragment() {
         listFollowing.clear()
         getTotalFollowing(login!!)
         followingAdapter = FollowFollowerAdapter(requireActivity(), listFollowing)
-        followingAdapter.notifyDataSetChanged()
         setupRecyclerView()
+
 
         Log.d("jumlah-data", "onViewCreated: " + listFollowing.size)
 
@@ -67,11 +65,11 @@ class FollowingFragment2 : Fragment() {
         listFollowing.clear()
         viewModel.getFollowersTotals(login)
         viewModel.showFollowingTotal.observe(viewLifecycleOwner, Observer { responseTotalFollower ->
-            when(responseTotalFollower) {
+            when (responseTotalFollower) {
                 is Resource.Success -> {
-                    responseTotalFollower.data?.let {totalFollowerResponse ->
+                    responseTotalFollower.data?.let { totalFollowerResponse ->
                         listFollowing.addAll(totalFollowerResponse)
-                        Log.d("jumlah-data", "getTotalFollowing: ${listFollowing.size}" )
+                        Log.d("jumlah-data", "getTotalFollowing: ${listFollowing.size}")
                         followingAdapter.notifyDataSetChanged()
                     }
 
@@ -87,6 +85,8 @@ class FollowingFragment2 : Fragment() {
             adapter = followingAdapter
             layoutManager = LinearLayoutManager(activity)
         }
+
+        followingAdapter.notifyDataSetChanged()
     }
 
     companion object {
