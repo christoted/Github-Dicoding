@@ -3,13 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.Fragment.FollowingFragment">
+    tools:context=".ui.Fragment.FollowingFragment2">
 
-    <TextView
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_following"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="30sp"
-        android:gravity="center"
-        android:text="Following Fragment" />
+        tools:listitem="@layout/item_following"
+        />
 
 </FrameLayout>

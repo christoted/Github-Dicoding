@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -37,6 +38,21 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
         super.onViewCreated(view, savedInstanceState)
 
 
+        setCurrentFragment(FollowingFragment2.newInstance(args.user.login.toString()))
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            when(it.itemId) {
+                R.id.followingFragment -> {
+                    setCurrentFragment(FollowingFragment2.newInstance(args.user.login.toString()))
+                    Log.d("test-send-data", "onViewCreated: " + args.user.login.toString())
+//                    val bundle = Bundle().apply {
+//                        putString("login", args.user.login)
+//                    }
+                }
+                R.id.followerFragment -> setCurrentFragment(FollowerFragment.newInstance(args.user.login.toString()))
+            }
+            true
+        }
+
 
 
         viewModel = (activity as MainActivity).viewModel
@@ -45,6 +61,7 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
         val user1 = args.user
         id_login_user_detail.text = user1.login
         id_user_type_detail.text = user1.type
+
 
         id_repository_user_detail.text = "Dummy"
 
@@ -61,22 +78,11 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
         listFollowing.clear()
         listRepo.clear()
 
-        val followingFragment: FollowingFragment = FollowingFragment()
-        val followerFragment: FollowerFragment = FollowerFragment()
-
-        setCurrentFragment(followingFragment)
-        bottomNavigationView.setOnNavigationItemSelectedListener {
-            when(it.itemId) {
-                R.id.followingFragment -> setCurrentFragment(followingFragment)
-                R.id.followerFragment -> setCurrentFragment(followerFragment)
-            }
-            true
-        }
-
     }
 
     private fun setCurrentFragment(fragment: Fragment) = fragmentManager?.beginTransaction()?.apply {
         replace(R.id.flFragment, fragment)
+        args.user.login
         commit()
     }
 

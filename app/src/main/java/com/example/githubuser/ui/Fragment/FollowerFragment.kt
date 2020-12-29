@@ -2,58 +2,82 @@ package com.example.githubuser.ui.Fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+
 import android.view.View
-import android.view.ViewGroup
+import androidx.lifecycle.Observer
+
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubuser.R
+import com.example.githubuser.adapter.FollowFollowerAdapter
+import com.example.githubuser.model.GithubFollowerItem
+import com.example.githubuser.ui.MainActivity
+import com.example.githubuser.ui.ViewModel.UserViewModel
+import kotlinx.android.synthetic.main.fragment_follower.*
+import kotlinx.android.synthetic.main.fragment_following.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FollowerFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class FollowerFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+class FollowerFragment : Fragment(R.layout.fragment_follower) {
+    private var login: String? = null
+
+    private lateinit var viewModel: UserViewModel
+
+    private lateinit var followerAdapter : FollowFollowerAdapter
+    var listFollower: ArrayList<GithubFollowerItem> = ArrayList()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            login = it.getString(ARG_PARAM1)
+
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_follower, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel = (activity as MainActivity).viewModel
+
+        getTotalFollower(login!!)
+        followerAdapter = FollowFollowerAdapter(requireActivity(), listFollower)
+        setupRecyclerView()
+
+        listFollower.clear()
+    }
+
+    private fun getTotalFollower(login: String) {
+        listFollower.clear()
+        viewModel.getFollowersTotals(login)
+        viewModel.showFollowerTotal.observe(viewLifecycleOwner, Observer {ResourceGithubFollowers ->
+            when (ResourceGithubFollowers) {
+                is com.example.githubuser.util.Resource.Success -> {
+                    ResourceGithubFollowers.data?.let { GithubFolowerRes ->
+                        listFollower.addAll(GithubFolowerRes)
+                        followerAdapter.notifyDataSetChanged()
+                    }
+                }
+            }
+        })
+
+    }
+
+    private fun setupRecyclerView() {
+        rv_follower.apply {
+            adapter = followerAdapter
+            layoutManager = LinearLayoutManager(activity)
+        }
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FollowerFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(login: String) =
             FollowerFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putString(ARG_PARAM1, login)
+
                 }
             }
     }

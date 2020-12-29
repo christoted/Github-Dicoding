@@ -37,8 +37,6 @@ class UserListFragment : Fragment(R.layout.fragment_user_list), UserAdapter.User
 
         viewModel = (activity as MainActivity).viewModel
 
-
-
         initRecyclerView()
 
         viewModel.someUser.observe(viewLifecycleOwner, Observer {response ->

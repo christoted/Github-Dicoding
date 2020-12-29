@@ -5,11 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".ui.Fragment.FollowerFragment">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_follower"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="30sp"
-        android:gravity="center"
-        android:text="Follower Fragment" />
+        tools:listitem="@layout/item_following"
+        />
 
 </FrameLayout>
