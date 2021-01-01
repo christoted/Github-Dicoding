@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.githubuser.R
 import com.example.githubuser.model.GithubUserItem
 import com.example.githubuser.model.GithubUserResponse
@@ -29,6 +30,9 @@ class UserAdapter(
 
         fun bind(user : GithubUserItem) {
             itemView.id_tv_login_name.text = user.login
+            Glide.with(context)
+                .load(user.avatar_url)
+                .into(itemView.id_profile_image_user_list)
         }
 
     }
