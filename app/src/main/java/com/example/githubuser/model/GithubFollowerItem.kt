@@ -72,7 +72,9 @@ data class GithubFollowerItem(
 
     companion object CREATOR : Parcelable.Creator<GithubFollowerItem> {
         override fun createFromParcel(parcel: Parcel): GithubFollowerItem {
-            return GithubFollowerItem(parcel)
+            return GithubFollowerItem(
+                parcel
+            )
         }
 
         override fun newArray(size: Int): Array<GithubFollowerItem?> {

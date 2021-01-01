@@ -1,8 +1,12 @@
 package com.example.githubuser.repository
 
 import com.example.githubuser.api.RetrofitInstance
+import com.example.githubuser.database.UserDatabase
+import com.example.githubuser.model.GithubUserItem
 
-class UserRepository() {
+class UserRepository(
+    val db : UserDatabase
+) {
 
     //Get Remote Data
     suspend fun getSomeUser() = RetrofitInstance.api.getSomeUser()
@@ -18,5 +22,14 @@ class UserRepository() {
 
     //Get all Repository
     suspend fun getRepository(login: String) = RetrofitInstance.api.getRepo(login)
+
+    //Add to Favourite
+    suspend fun upsert(githubUserItem: GithubUserItem) = db.getUserDAO().upsert(githubUserItem)
+
+    //Get all Save Data
+    fun getAllFavouriteUsers() = db.getUserDAO().getAllSavedUsers()
+
+    //Delete favourite
+    suspend fun delete(githubUserItem: GithubUserItem) = db.getUserDAO().deleteSavedUser(githubUserItem)
 
 }

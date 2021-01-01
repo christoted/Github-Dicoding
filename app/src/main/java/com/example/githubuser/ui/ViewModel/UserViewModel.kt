@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.githubuser.model.GithubFollowerResponse
 import com.example.githubuser.model.GithubRepoResponse
+import com.example.githubuser.model.GithubUserItem
 import com.example.githubuser.model.GithubUserResponse
 import com.example.githubuser.repository.UserRepository
 import com.example.githubuser.util.Resource
@@ -26,6 +27,18 @@ class UserViewModel(
 
     init {
         getSomeUser()
+    }
+
+    fun savedToFavourite(githubUserItem: GithubUserItem) = viewModelScope.launch {
+        repository.upsert(githubUserItem)
+    }
+
+    fun getAllFavourite() =
+        repository.getAllFavouriteUsers()
+
+
+    fun deleteFavourite(githubUserItem: GithubUserItem) = viewModelScope.launch {
+        repository.delete(githubUserItem)
     }
 
     fun getSearchUser(q: String) = viewModelScope.launch {

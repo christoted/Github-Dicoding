@@ -19,6 +19,7 @@ import com.example.githubuser.model.GithubUserItem
 import com.example.githubuser.ui.MainActivity
 import com.example.githubuser.ui.ViewModel.UserViewModel
 import com.example.githubuser.util.Resource
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_user_detail.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -75,6 +76,12 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
         listFollower.clear()
         listFollowing.clear()
         listRepo.clear()
+
+        fab.setOnClickListener {
+            viewModel.savedToFavourite(user!!)
+            Snackbar.make(it,"Success Saved", Snackbar.LENGTH_SHORT).show()
+            fab.hide()
+        }
 
     }
 
