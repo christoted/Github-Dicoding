@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/userListFragment">
+
+    <fragment
+        android:id="@+id/userListFragment"
+        android:name="com.example.githubuser.ui.Fragment.UserListFragment"
+        android:label="UserListFragment" >
+        <action
+            android:id="@+id/action_userListFragment_to_userDetailFragment"
+            app:destination="@id/userDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/userDetailFragment"
+        android:name="com.example.githubuser.ui.Fragment.UserDetailFragment"
+        android:label="UserDetailFragment" >
+        <argument
+            android:name="user"
+            app:argType="com.example.githubuser.model.GithubUserItem" />
+    </fragment>
+    <fragment
+        android:id="@+id/favouriteFragment"
+        android:name="com.example.githubuser.ui.Fragment.FavouriteFragment"
+        android:label="fragment_favourite"
+        tools:layout="@layout/fragment_favourite" />
+</navigation>

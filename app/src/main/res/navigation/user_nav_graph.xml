@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/user_nav_graph"
+    app:startDestination="@id/followingFragment">
+
+    <fragment
+        android:id="@+id/followingFragment"
+        android:name="com.example.githubuser.ui.Fragment.FollowingFragment"
+        android:label="fragment_following"
+        tools:layout="@layout/fragment_following"/>
+    <fragment
+        android:id="@+id/followerFragment"
+        android:name="com.example.githubuser.ui.Fragment.FollowerFragment"
+        android:label="fragment_follower"
+        tools:layout="@layout/fragment_follower" />
+</navigation>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/followingFragment"
+        android:title="Following"
+        android:icon="@drawable/ic_person"
+        />
+    <item
+        android:id="@+id/followerFragment"
+        android:title="Follower"
+        android:icon="@drawable/ic_person"
+        />
+</menu>
