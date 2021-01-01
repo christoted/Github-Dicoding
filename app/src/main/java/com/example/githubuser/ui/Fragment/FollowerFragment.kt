@@ -54,6 +54,7 @@ class FollowerFragment : Fragment(R.layout.fragment_follower) {
             when (ResourceGithubFollowers) {
                 is com.example.githubuser.util.Resource.Success -> {
                     ResourceGithubFollowers.data?.let { GithubFolowerRes ->
+                        listFollower.clear()
                         listFollower.addAll(GithubFolowerRes)
                         followerAdapter.notifyDataSetChanged()
                     }

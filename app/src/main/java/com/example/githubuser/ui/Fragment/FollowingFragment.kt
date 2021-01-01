@@ -68,9 +68,14 @@ class FollowingFragment2 : Fragment() {
             when (responseTotalFollower) {
                 is Resource.Success -> {
                     responseTotalFollower.data?.let { totalFollowerResponse ->
-                        listFollowing.addAll(totalFollowerResponse)
-                        Log.d("jumlah-data", "getTotalFollowing: ${listFollowing.size}")
-                        followingAdapter.notifyDataSetChanged()
+                        Log.d("jumlah-data", "getTotalFollowing: atas ${listFollowing.size}")
+                        listFollowing.clear()
+//                        if ( listFollowing.size == 0) {
+                            listFollowing.addAll(totalFollowerResponse)
+                            Log.d("jumlah-data", "getTotalFollowing: bawah ${listFollowing.size}")
+                            followingAdapter.notifyDataSetChanged()
+                    //    }
+
                     }
 
                 }
