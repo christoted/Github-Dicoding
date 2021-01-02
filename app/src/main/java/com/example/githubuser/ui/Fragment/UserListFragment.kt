@@ -43,6 +43,7 @@ class UserListFragment : Fragment(R.layout.fragment_user_list), UserAdapter.User
         viewModel.someUser.observe(viewLifecycleOwner, Observer {response ->
             when(response) {
                 is Resource.Success -> {
+                    hideProgressBar()
                     response.data?.let { githubResponses ->
                       //  userAdapter.users.addAll(githubResponses.items)
                         githubUsers.addAll(githubResponses.items)
@@ -84,13 +85,16 @@ class UserListFragment : Fragment(R.layout.fragment_user_list), UserAdapter.User
 
             viewModel.searchUser.observe(viewLifecycleOwner, Observer {responseSearch->
                 when(responseSearch) {
-                    is Resource.Success -> {  
+                    is Resource.Success -> {
+                        hideProgressBar()
                         responseSearch.data?.let {searchResponse ->  
                          //   userAdapter.users.addAll(searchResponse)
-                            if ( githubUsers.size == 0) {
-                                githubUsers.addAll(searchResponse.items)
-                                userAdapter.notifyDataSetChanged()
-                            }
+                            githubUsers.clear()
+                            githubUsers.addAll(searchResponse.items)
+                            userAdapter.notifyDataSetChanged()
+//                            if ( githubUsers.size == 0) {
+//
+//                            }
 
                         }
 
@@ -103,6 +107,14 @@ class UserListFragment : Fragment(R.layout.fragment_user_list), UserAdapter.User
             })
         }
 
+    }
+
+    private fun hideProgressBar() {
+        progressBar.visibility = View.INVISIBLE
+    }
+
+    private fun showProgressBar(){
+        progressBar.visibility = View.VISIBLE
     }
 
     private fun initRecyclerView() {
