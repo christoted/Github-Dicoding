@@ -127,7 +127,7 @@ class UserListFragment : Fragment(R.layout.fragment_user_list), UserAdapter.User
 
     override fun onUserItemClick(Position: Int) {
         val user = userAdapter.users[Position]
-        Toast.makeText(activity, "" + Position, Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, "" + user.login, Toast.LENGTH_SHORT).show()
         val bundle = Bundle().apply {
             putParcelable("user", user)
         }

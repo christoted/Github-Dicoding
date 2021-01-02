@@ -15,6 +15,7 @@ import com.example.githubuser.ui.MainActivity
 import com.example.githubuser.ui.ViewModel.UserViewModel
 import com.example.githubuser.util.Resource
 import kotlinx.android.synthetic.main.fragment_following.*
+import kotlinx.android.synthetic.main.fragment_user_list.*
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -67,6 +68,7 @@ class FollowingFragment2 : Fragment() {
         viewModel.showFollowingTotal.observe(viewLifecycleOwner, Observer { responseTotalFollower ->
             when (responseTotalFollower) {
                 is Resource.Success -> {
+                    hideProgressBar()
                     responseTotalFollower.data?.let { totalFollowerResponse ->
                         Log.d("jumlah-data", "getTotalFollowing: atas ${listFollowing.size}")
                         listFollowing.clear()
@@ -83,6 +85,14 @@ class FollowingFragment2 : Fragment() {
             }
         })
 
+    }
+
+    private fun hideProgressBar() {
+        progressBarFollowing.visibility = View.INVISIBLE
+    }
+
+    private fun showProgressBar(){
+        progressBarFollowing.visibility = View.VISIBLE
     }
 
     private fun setupRecyclerView() {

@@ -20,6 +20,7 @@ import com.example.githubuser.ui.MainActivity
 import com.example.githubuser.ui.ViewModel.UserViewModel
 import com.example.githubuser.util.Resource
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_follower.*
 import kotlinx.android.synthetic.main.fragment_user_detail.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -85,6 +86,14 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
 
     }
 
+    private fun hideProgressBar() {
+        progressBarDetail.visibility = View.INVISIBLE
+    }
+
+    private fun showProgressBar(){
+        progressBarDetail.visibility = View.VISIBLE
+    }
+
     private fun setCurrentFragment(fragment: Fragment) = fragmentManager?.beginTransaction()?.apply {
         replace(R.id.flFragment, fragment)
         args.user.login
@@ -96,6 +105,7 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
         viewModel.showFollowerTotal.observe(viewLifecycleOwner, Observer { responseTotalFollower ->
             when(responseTotalFollower) {
                 is Resource.Success -> {
+                    hideProgressBar()
                     responseTotalFollower.data?.let {totalFollowerResponse ->
                         listFollower.addAll(totalFollowerResponse)
                         totalCount = listFollower.size
@@ -114,6 +124,7 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
         viewModel.showFollowingTotal.observe(viewLifecycleOwner, Observer {ResourceResponsesTotalFollowing->
             when(ResourceResponsesTotalFollowing) {
                 is Resource.Success -> {
+                    hideProgressBar()
                     ResourceResponsesTotalFollowing.data?.let { ResponsesTotalFollowing->
                         listFollowing.addAll(ResponsesTotalFollowing)
                         totalCountFollowing = listFollowing.size
@@ -131,6 +142,7 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
         viewModel.showRepository.observe(viewLifecycleOwner, Observer {ResourceGithubResponses->
              when(ResourceGithubResponses) {
                  is Resource.Success -> {
+                     hideProgressBar()
                      ResourceGithubResponses.data?.let {GithubResponses ->
                          listRepo.addAll(GithubResponses)
                          id_repository_user_detail.text = listRepo.size.toString()

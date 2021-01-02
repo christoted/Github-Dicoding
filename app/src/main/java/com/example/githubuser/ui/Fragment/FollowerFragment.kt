@@ -53,6 +53,7 @@ class FollowerFragment : Fragment(R.layout.fragment_follower) {
         viewModel.showFollowerTotal.observe(viewLifecycleOwner, Observer {ResourceGithubFollowers ->
             when (ResourceGithubFollowers) {
                 is com.example.githubuser.util.Resource.Success -> {
+                    hideProgressBar()
                     ResourceGithubFollowers.data?.let { GithubFolowerRes ->
                         listFollower.clear()
                         listFollower.addAll(GithubFolowerRes)
@@ -62,6 +63,14 @@ class FollowerFragment : Fragment(R.layout.fragment_follower) {
             }
         })
 
+    }
+
+    private fun hideProgressBar() {
+        progressBarFollowwer.visibility = View.INVISIBLE
+    }
+
+    private fun showProgressBar(){
+        progressBarFollowwer.visibility = View.VISIBLE
     }
 
     private fun setupRecyclerView() {

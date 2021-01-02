@@ -23,6 +23,9 @@ class UserAdapter(
     inner class UserViewHolder(view: View, itemListener: UserItemListener) : RecyclerView.ViewHolder(view){
 
         init {
+//            itemView.buttonTest.setOnClickListener{
+//                itemListener.onUserItemClick(adapterPosition)
+//            }
             itemView.setOnClickListener{
                 itemListener.onUserItemClick(adapterPosition)
             }
