@@ -1,4 +1,5 @@
 package com.example.githubuser.ui.Fragment
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,34 +34,48 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
     private val args: UserDetailFragmentArgs by navArgs()
     val listFollower = ArrayList<GithubFollowerItem>()
     val listFollowing = ArrayList<GithubFollowerItem>()
-    val listRepo = Vector<GithubRepoItem>()
+    val listRepo = ArrayList<GithubRepoItem>()
 
+    lateinit var listRepoTest: ArrayList<GithubRepoItem>
+    lateinit var listFollowingTest: ArrayList<GithubFollowerItem>
+    lateinit var listFollowerTest: ArrayList<GithubFollowerItem>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = (activity as MainActivity).viewModel
 
-        val user: GithubUserItem? = arguments?.getParcelable<GithubUserItem>("user")
+        listRepoTest = arguments?.getParcelableArrayList<GithubRepoItem>("listRepo") ?: listRepo
+        Log.d("listRepoTest", "onViewCreated: ${listRepoTest.size}")
+        id_repository_user_detail.text = listRepoTest.size.toString()
+
+        listFollowingTest =
+            arguments?.getParcelableArrayList<GithubFollowerItem>("listFollowing") ?: listFollowing
+        Log.d("listFollowingTest", "onViewCreated: ${listFollowingTest.size}")
+        id_following_user_detail.text = listFollowingTest.size.toString()
+
+        listFollowerTest =
+            arguments?.getParcelableArrayList<GithubFollowerItem>("listFollower") ?: listFollower
+        Log.d("listFollowerTest", "onViewCreated: ${listFollowerTest.size}")
+        id_followers_user_detail.text = listFollowerTest.size.toString()
+
+//      val user: GithubUserItem? = arguments?.getParcelable<GithubUserItem>("user")
         val user1 = args.user
         id_login_user_detail.text = user1.login
         id_user_type_detail.text = user1.type
-
-
-        id_repository_user_detail.text = "Dummy"
 
         Glide.with(view)
             .load(user1.avatar_url)
             .into(id_profile_image_user_detail)
 
-        getTotalFollower(user1.login!!)
-        getTotalFollowing(user1.login)
-        getTotalRepo(user1.login)
+//        getTotalFollower(user1.login!!)
+//        getTotalFollowing(user1.login)
+//        getTotalRepo(user1.login)
 
         setCurrentFragment(FollowingFragment2.newInstance(args.user.login.toString()))
         Log.d("jumlah-data", "onViewCreated jumlah data : $listFollowing")
         bottomNavigationView.setOnNavigationItemSelectedListener {
-            when(it.itemId) {
+            when (it.itemId) {
                 R.id.followingFragment -> {
                     setCurrentFragment(FollowingFragment2.newInstance(args.user.login.toString()))
                     Log.d("test-send-data", "onViewCreated: " + args.user.login.toString())
@@ -79,34 +94,35 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
         listRepo.clear()
 
         fab.setOnClickListener {
-            viewModel.savedToFavourite(user!!)
-            Snackbar.make(it,"Success Saved", Snackbar.LENGTH_SHORT).show()
+            viewModel.savedToFavourite(user1!!)
+            Snackbar.make(it, "Success Saved", Snackbar.LENGTH_SHORT).show()
             fab.hide()
         }
 
     }
 
     private fun hideProgressBar() {
-        progressBarDetail.visibility = View.INVISIBLE
+
     }
 
-    private fun showProgressBar(){
-        progressBarDetail.visibility = View.VISIBLE
+    private fun showProgressBar() {
+
     }
 
-    private fun setCurrentFragment(fragment: Fragment) = fragmentManager?.beginTransaction()?.apply {
-        replace(R.id.flFragment, fragment)
-        args.user.login
-        commit()
-    }
+    private fun setCurrentFragment(fragment: Fragment) =
+        fragmentManager?.beginTransaction()?.apply {
+            replace(R.id.flFragment, fragment)
+            args.user.login
+            commit()
+        }
 
     private fun getTotalFollower(login: String) {
         viewModel.getFollowersTotals(login)
         viewModel.showFollowerTotal.observe(viewLifecycleOwner, Observer { responseTotalFollower ->
-            when(responseTotalFollower) {
+            when (responseTotalFollower) {
                 is Resource.Success -> {
                     hideProgressBar()
-                    responseTotalFollower.data?.let {totalFollowerResponse ->
+                    responseTotalFollower.data?.let { totalFollowerResponse ->
                         listFollower.addAll(totalFollowerResponse)
                         totalCount = listFollower.size
                         Log.d("Count", "getTotalFollower: " + totalCount)
@@ -121,35 +137,37 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
 
     private fun getTotalFollowing(login: String) {
         viewModel.getFollowingTotal(login)
-        viewModel.showFollowingTotal.observe(viewLifecycleOwner, Observer {ResourceResponsesTotalFollowing->
-            when(ResourceResponsesTotalFollowing) {
+        viewModel.showFollowingTotal.observe(
+            viewLifecycleOwner,
+            Observer { ResourceResponsesTotalFollowing ->
+                when (ResourceResponsesTotalFollowing) {
+                    is Resource.Success -> {
+                        hideProgressBar()
+                        ResourceResponsesTotalFollowing.data?.let { ResponsesTotalFollowing ->
+                            listFollowing.addAll(ResponsesTotalFollowing)
+                            totalCountFollowing = listFollowing.size
+                            Log.d("Count", "Following : " + totalCountFollowing)
+                        }
+                        id_following_user_detail.text = totalCountFollowing.toString()
+                        listFollowing.clear()
+                    }
+                }
+            })
+    }
+
+    private fun getTotalRepo(login: String) {
+        viewModel.getTotalRepo(login);
+        viewModel.showRepository.observe(viewLifecycleOwner, Observer { ResourceGithubResponses ->
+            when (ResourceGithubResponses) {
                 is Resource.Success -> {
                     hideProgressBar()
-                    ResourceResponsesTotalFollowing.data?.let { ResponsesTotalFollowing->
-                        listFollowing.addAll(ResponsesTotalFollowing)
-                        totalCountFollowing = listFollowing.size
-                        Log.d("Count", "Following : " + totalCountFollowing)
+                    ResourceGithubResponses.data?.let { GithubResponses ->
+                        listRepo.addAll(GithubResponses)
+                        id_repository_user_detail.text = listRepo.size.toString()
                     }
-                    id_following_user_detail.text = totalCountFollowing.toString()
-                    listFollowing.clear()
+                    listRepo.clear()
                 }
             }
-        })
-    }
-    
-    private fun getTotalRepo(login: String){
-        viewModel.getTotalRepo(login);
-        viewModel.showRepository.observe(viewLifecycleOwner, Observer {ResourceGithubResponses->
-             when(ResourceGithubResponses) {
-                 is Resource.Success -> {
-                     hideProgressBar()
-                     ResourceGithubResponses.data?.let {GithubResponses ->
-                         listRepo.addAll(GithubResponses)
-                         id_repository_user_detail.text = listRepo.size.toString()
-                     }
-                     listRepo.clear()
-                 }
-             }
         })
     }
 }

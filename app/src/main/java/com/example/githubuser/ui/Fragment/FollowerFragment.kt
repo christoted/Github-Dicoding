@@ -23,7 +23,7 @@ class FollowerFragment : Fragment(R.layout.fragment_follower) {
 
     private lateinit var viewModel: UserViewModel
 
-    private lateinit var followerAdapter : FollowFollowerAdapter
+    private lateinit var followerAdapter: FollowFollowerAdapter
     var listFollower: ArrayList<GithubFollowerItem> = ArrayList()
 
 
@@ -48,20 +48,24 @@ class FollowerFragment : Fragment(R.layout.fragment_follower) {
     }
 
     private fun getTotalFollower(login: String) {
-        listFollower.clear()
+        showProgressBar()
         viewModel.getFollowersTotals(login)
-        viewModel.showFollowerTotal.observe(viewLifecycleOwner, Observer {ResourceGithubFollowers ->
-            when (ResourceGithubFollowers) {
-                is com.example.githubuser.util.Resource.Success -> {
-                    hideProgressBar()
-                    ResourceGithubFollowers.data?.let { GithubFolowerRes ->
-                        listFollower.clear()
-                        listFollower.addAll(GithubFolowerRes)
-                        followerAdapter.notifyDataSetChanged()
+        viewModel.showFollowerTotal.observe(
+            viewLifecycleOwner,
+            Observer { ResourceGithubFollowers ->
+                when (ResourceGithubFollowers) {
+                    is com.example.githubuser.util.Resource.Success -> {
+
+                        ResourceGithubFollowers.data?.let { GithubFolowerRes ->
+                            listFollower.clear()
+                            listFollower.addAll(GithubFolowerRes)
+                            followerAdapter.notifyDataSetChanged()
+                        }
+                        hideProgressBar()
                     }
+
                 }
-            }
-        })
+            })
 
     }
 
@@ -69,7 +73,7 @@ class FollowerFragment : Fragment(R.layout.fragment_follower) {
         progressBarFollowwer.visibility = View.INVISIBLE
     }
 
-    private fun showProgressBar(){
+    private fun showProgressBar() {
         progressBarFollowwer.visibility = View.VISIBLE
     }
 

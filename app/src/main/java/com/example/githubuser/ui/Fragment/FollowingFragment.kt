@@ -63,23 +63,17 @@ class FollowingFragment2 : Fragment() {
     }
 
     private fun getTotalFollowing(login: String) {
-        listFollowing.clear()
+        showProgressBar()
         viewModel.getFollowersTotals(login)
         viewModel.showFollowingTotal.observe(viewLifecycleOwner, Observer { responseTotalFollower ->
             when (responseTotalFollower) {
                 is Resource.Success -> {
-                    hideProgressBar()
                     responseTotalFollower.data?.let { totalFollowerResponse ->
-                        Log.d("jumlah-data", "getTotalFollowing: atas ${listFollowing.size}")
                         listFollowing.clear()
-//                        if ( listFollowing.size == 0) {
-                            listFollowing.addAll(totalFollowerResponse)
-                            Log.d("jumlah-data", "getTotalFollowing: bawah ${listFollowing.size}")
-                            followingAdapter.notifyDataSetChanged()
-                    //    }
-
+                        listFollowing.addAll(totalFollowerResponse)
+                        followingAdapter.notifyDataSetChanged()
                     }
-
+                    hideProgressBar()
                 }
 
             }
@@ -91,7 +85,7 @@ class FollowingFragment2 : Fragment() {
         progressBarFollowing.visibility = View.INVISIBLE
     }
 
-    private fun showProgressBar(){
+    private fun showProgressBar() {
         progressBarFollowing.visibility = View.VISIBLE
     }
 
