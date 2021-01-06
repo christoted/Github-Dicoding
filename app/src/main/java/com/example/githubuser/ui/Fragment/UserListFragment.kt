@@ -182,8 +182,11 @@ class UserListFragment : Fragment(R.layout.fragment_user_list), UserAdapter.User
            Toast.makeText(activity, "Please wait for a second", Toast.LENGTH_SHORT).show()
 
         getTotalRepo(user.login ?: "christoted")
+        Log.d("TAG", "onUserItemClick: ${listRepo.size}")
         getTotalFollower(user.login ?: "christoted")
+        Log.d("TAG", "onUserItemClick: ${listFollower.size}")
         getTotalFollowing(user.login ?: "christoted")
+        Log.d("TAG", "onUserItemClick: ${listFollowing.size}")
 
         val bundle = Bundle().apply {
             putParcelable("user", user)
