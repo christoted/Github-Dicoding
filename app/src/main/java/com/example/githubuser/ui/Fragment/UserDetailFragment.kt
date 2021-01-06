@@ -14,6 +14,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.example.githubuser.R
+import com.example.githubuser.adapter.UserAdapter
 import com.example.githubuser.model.GithubFollowerItem
 import com.example.githubuser.model.GithubRepoItem
 import com.example.githubuser.model.GithubUserItem
@@ -40,6 +41,10 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
     lateinit var listFollowingTest: ArrayList<GithubFollowerItem>
     lateinit var listFollowerTest: ArrayList<GithubFollowerItem>
 
+    var listUser: ArrayList<GithubUserItem> = ArrayList()
+
+    var loginName: String? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -63,6 +68,8 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
         val user1 = args.user
         id_login_user_detail.text = user1.login
         id_user_type_detail.text = user1.type
+
+        loginName = user1.login
 
         Glide.with(view)
             .load(user1.avatar_url)
@@ -93,11 +100,48 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
         listFollowing.clear()
         listRepo.clear()
 
+
         fab.setOnClickListener {
-            viewModel.savedToFavourite(user1!!)
-            Snackbar.make(it, "Success Saved", Snackbar.LENGTH_SHORT).show()
+            viewModel.savedToFavourite(user1)
+            Snackbar.make(it, "Saved", Snackbar.LENGTH_SHORT).show()
             fab.hide()
+            fab_delete.show()
         }
+
+        fab_delete.setOnClickListener {
+            viewModel.deleteFavourite(user1)
+            Snackbar.make(it, "Deleted", Snackbar.LENGTH_SHORT).show()
+          
+
+        }
+        checkSavedUser()
+    }
+
+    private fun checkSavedUser() {
+
+        var isAvailable : Boolean
+
+        viewModel.getAllFavourite().observe(viewLifecycleOwner, Observer {
+            listUser.addAll(it)
+
+            for (i in listUser) {
+                if (loginName == i.login) {
+                    Log.d(
+                        "TEST123",
+                        "checkSavedUser BAWAH: SAVED $loginName + ${i.login.toString()}"
+                    )
+                    fab.hide()
+                    fab_delete.show()
+                    break
+                } else {
+                    fab_delete.hide()
+                    fab.show()
+
+                }
+            }
+        })
+
+
 
     }
 
