@@ -125,7 +125,7 @@
             android:layout_marginTop="230dp"
             android:layout_marginRight="20dp"
             android:src="@drawable/ic_favorite"
-            android:visibility="invisible"
+            android:visibility="gone"
             app:fabSize="normal" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -136,7 +136,7 @@
             android:layout_marginTop="230dp"
             android:layout_marginRight="20dp"
             android:src="@drawable/ic_delete"
-            android:visibility="invisible"
+            android:visibility="gone"
             app:fabSize="normal" />
     </RelativeLayout>
 

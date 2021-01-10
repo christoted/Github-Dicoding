@@ -95,31 +95,29 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
             true
         }
 
-
         listFollower.clear()
         listFollowing.clear()
         listRepo.clear()
 
-
+        checkSavedUser()
         fab.setOnClickListener {
             viewModel.savedToFavourite(user1)
             Snackbar.make(it, "Saved", Snackbar.LENGTH_SHORT).show()
             fab.hide()
             fab_delete.show()
         }
-
         fab_delete.setOnClickListener {
             viewModel.deleteFavourite(user1)
             Snackbar.make(it, "Deleted", Snackbar.LENGTH_SHORT).show()
-          
+            fab.show()
+            fab_delete.hide()
+
 
         }
-        checkSavedUser()
+
     }
 
     private fun checkSavedUser() {
-
-        var isAvailable : Boolean
 
         viewModel.getAllFavourite().observe(viewLifecycleOwner, Observer {
             listUser.addAll(it)
@@ -136,7 +134,6 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
                 } else {
                     fab_delete.hide()
                     fab.show()
-
                 }
             }
         })
@@ -154,7 +151,7 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
     }
 
     private fun setCurrentFragment(fragment: Fragment) =
-        fragmentManager?.beginTransaction()?.apply {
+        childFragmentManager.beginTransaction().apply {
             replace(R.id.flFragment, fragment)
             args.user.login
             commit()
