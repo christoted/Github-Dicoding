@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.menu_item, menu)
 
+
 //        val search : MenuItem = menu.findItem(R.id.search)
 //        val searchView = search.actionView as SearchView
 //
@@ -77,6 +78,11 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.favourite -> {
                 val intent = Intent(this, FavouriteActivity::class.java)
+                startActivity(intent)
+            }
+
+            R.id.setting -> {
+                val intent = Intent(this, SettingActivity::class.java)
                 startActivity(intent)
             }
         }
