@@ -112,7 +112,6 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
             fab.show()
             fab_delete.hide()
 
-
         }
 
     }

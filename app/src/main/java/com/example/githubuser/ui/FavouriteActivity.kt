@@ -46,6 +46,7 @@ class FavouriteActivity : AppCompatActivity(), UserAdapter.UserItemListener{
 
         Log.d("size-user", "onCreate: bawah ${listUser.size}")
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun initRecyclerView() {
