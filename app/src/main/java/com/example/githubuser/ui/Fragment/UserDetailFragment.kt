@@ -1,34 +1,28 @@
 package com.example.githubuser.ui.Fragment
 
+import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.example.githubuser.R
-import com.example.githubuser.adapter.UserAdapter
+import com.example.githubuser.dbbasic.DatabaseContract
+import com.example.githubuser.dbbasic.UserHelper
+import com.example.githubuser.helper.MappingHelper
 import com.example.githubuser.model.GithubFollowerItem
 import com.example.githubuser.model.GithubRepoItem
 import com.example.githubuser.model.GithubUserItem
 import com.example.githubuser.ui.MainActivity
 import com.example.githubuser.ui.ViewModel.UserViewModel
-import com.example.githubuser.util.Resource
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_follower.*
 import kotlinx.android.synthetic.main.fragment_user_detail.*
-import java.util.*
+import kotlinx.coroutines.*
 import kotlin.collections.ArrayList
-import kotlin.properties.Delegates
 
-class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
+class UserDetailFragment : Fragment(R.layout.fragment_user_detail){
     lateinit var viewModel: UserViewModel
     var totalCount: Int = 0
     var totalCountFollowing: Int = 0
@@ -45,8 +39,18 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
 
     var loginName: String? = null
 
+    private lateinit var userHelper: UserHelper
+
+    companion object {
+        val TAG = UserDetailFragment::class.java.simpleName
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        userHelper = UserHelper.getInstance(activity!!)
+        userHelper.open()
 
         viewModel = (activity as MainActivity).viewModel
 
@@ -64,7 +68,7 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
         Log.d("listFollowerTest", "onViewCreated: ${listFollowerTest.size}")
         id_followers_user_detail.text = listFollowerTest.size.toString()
 
-//      val user: GithubUserItem? = arguments?.getParcelable<GithubUserItem>("user")
+
         val user1 = args.user
         id_login_user_detail.text = user1.login
         id_user_type_detail.text = user1.type
@@ -75,9 +79,6 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
             .load(user1.avatar_url)
             .into(id_profile_image_user_detail)
 
-//        getTotalFollower(user1.login!!)
-//        getTotalFollowing(user1.login)
-//        getTotalRepo(user1.login)
 
         setCurrentFragment(FollowingFragment2.newInstance(args.user.login.toString()))
         Log.d("jumlah-data", "onViewCreated jumlah data : $listFollowing")
@@ -100,52 +101,85 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
         listRepo.clear()
 
         checkSavedUser()
-        fab.setOnClickListener {
-            viewModel.savedToFavourite(user1)
-            Snackbar.make(it, "Saved", Snackbar.LENGTH_SHORT).show()
-            fab.hide()
+
+        val values = ContentValues()
+        values.put(DatabaseContract.UserColumns._ID, user1.id)
+        values.put(DatabaseContract.UserColumns.LOGIN, user1.login)
+        values.put(DatabaseContract.UserColumns.AVATAR_URL, user1.avatar_url)
+        values.put(DatabaseContract.UserColumns.TYPE, user1.type)
+        
+        fab_delete.setOnClickListener{
+            userHelper.deleteByLoginName(loginName.toString())
+            Toast.makeText(activity, "Deleted", Toast.LENGTH_SHORT).show()
+            fab_add.show()
+            fab_delete.hide()
+        }
+
+        fab_add.setOnClickListener {
+            userHelper.insert(values)
+            Log.d(TAG, "onViewCreated: ${userHelper.insert(values)}")
+            Snackbar.make(it, "Success Added", Snackbar.LENGTH_SHORT).show()
+            Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show()
+            fab_add.hide()
             fab_delete.show()
         }
-        fab_delete.setOnClickListener {
-            viewModel.deleteFavourite(user1)
-            Snackbar.make(it, "Deleted", Snackbar.LENGTH_SHORT).show()
-            fab.show()
-            fab_delete.hide()
 
-        }
+
 
     }
 
     private fun checkSavedUser() {
 
-        viewModel.getAllFavourite().observe(viewLifecycleOwner, Observer {
-            listUser.addAll(it)
+        GlobalScope.launch(Dispatchers.Main) {
+            val deferredUser = withContext(Dispatchers.IO) {
+                val cursor = userHelper.queryAll()
+                MappingHelper.convertCursorToArrayList(cursor)
+            }
 
-            for (i in listUser) {
+            val users = deferredUser
+
+            if ( users.size > 0) {
+                listUser.addAll(users)
+            } else {
+                Toast.makeText(activity, "Empty", Toast.LENGTH_SHORT).show()
+            }
+
+            for ( i in listUser) {
                 if (loginName == i.login) {
                     Log.d(
-                        "TEST123",
+                        TAG,
                         "checkSavedUser BAWAH: SAVED $loginName + ${i.login.toString()}"
                     )
-                    fab.hide()
+                    fab_add.hide()
                     fab_delete.show()
                     break
                 } else {
                     fab_delete.hide()
-                    fab.show()
+                    fab_add.show()
                 }
             }
-        })
+        }
+
+//        viewModel.getAllFavourite().observe(viewLifecycleOwner, Observer {
+//            listUser.addAll(it)
+//
+//            for (i in listUser) {
+//                if (loginName == i.login) {
+//                    Log.d(
+//                        "TEST123",
+//                        "checkSavedUser BAWAH: SAVED $loginName + ${i.login.toString()}"
+//                    )
+//                    fab.hide()
+//                    fab_delete.show()
+//                    break
+//                } else {
+//                    fab_delete.hide()
+//                    fab.show()
+//                }
+//            }
+//        })
 
 
-
-    }
-
-    private fun hideProgressBar() {
-
-    }
-
-    private fun showProgressBar() {
 
     }
 
@@ -156,58 +190,4 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail) {
             commit()
         }
 
-    private fun getTotalFollower(login: String) {
-        viewModel.getFollowersTotals(login)
-        viewModel.showFollowerTotal.observe(viewLifecycleOwner, Observer { responseTotalFollower ->
-            when (responseTotalFollower) {
-                is Resource.Success -> {
-                    hideProgressBar()
-                    responseTotalFollower.data?.let { totalFollowerResponse ->
-                        listFollower.addAll(totalFollowerResponse)
-                        totalCount = listFollower.size
-                        Log.d("Count", "getTotalFollower: " + totalCount)
-                    }
-                    id_followers_user_detail.text = totalCount.toString()
-                    listFollower.clear()
-                }
-
-            }
-        })
-    }
-
-    private fun getTotalFollowing(login: String) {
-        viewModel.getFollowingTotal(login)
-        viewModel.showFollowingTotal.observe(
-            viewLifecycleOwner,
-            Observer { ResourceResponsesTotalFollowing ->
-                when (ResourceResponsesTotalFollowing) {
-                    is Resource.Success -> {
-                        hideProgressBar()
-                        ResourceResponsesTotalFollowing.data?.let { ResponsesTotalFollowing ->
-                            listFollowing.addAll(ResponsesTotalFollowing)
-                            totalCountFollowing = listFollowing.size
-                            Log.d("Count", "Following : " + totalCountFollowing)
-                        }
-                        id_following_user_detail.text = totalCountFollowing.toString()
-                        listFollowing.clear()
-                    }
-                }
-            })
-    }
-
-    private fun getTotalRepo(login: String) {
-        viewModel.getTotalRepo(login);
-        viewModel.showRepository.observe(viewLifecycleOwner, Observer { ResourceGithubResponses ->
-            when (ResourceGithubResponses) {
-                is Resource.Success -> {
-                    hideProgressBar()
-                    ResourceGithubResponses.data?.let { GithubResponses ->
-                        listRepo.addAll(GithubResponses)
-                        id_repository_user_detail.text = listRepo.size.toString()
-                    }
-                    listRepo.clear()
-                }
-            }
-        })
-    }
 }

@@ -118,7 +118,7 @@
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
+            android:id="@+id/fab_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -136,7 +136,7 @@
             android:layout_marginTop="230dp"
             android:layout_marginRight="20dp"
             android:src="@drawable/ic_delete"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:fabSize="normal" />
     </RelativeLayout>
 

@@ -20,6 +20,7 @@ class UserAdapter(
     val itemListener: UserItemListener
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
+
     inner class UserViewHolder(view: View, itemListener: UserItemListener) : RecyclerView.ViewHolder(view){
 
         init {
