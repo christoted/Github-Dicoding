@@ -15,9 +15,9 @@ import kotlinx.android.synthetic.main.fragment_user_detail.*
 @Parcelize
 data class GithubUserItem(
     @PrimaryKey
-    val id: Int,
-    val login: String?,
-    val avatar_url: String?,
-    val type: String?
+    val id: Int = 0,
+    val login: String?=null,
+    val avatar_url: String?=null,
+    val type: String?=null
 
 ) : Parcelable

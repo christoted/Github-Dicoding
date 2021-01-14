@@ -1,6 +1,7 @@
 package com.example.githubuser.ui.Fragment
 
 import android.content.ContentValues
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.githubuser.R
 import com.example.githubuser.dbbasic.DatabaseContract
+import com.example.githubuser.dbbasic.DatabaseContract.UserColumns.Companion.CONTENT_URI
 import com.example.githubuser.dbbasic.UserHelper
 import com.example.githubuser.helper.MappingHelper
 import com.example.githubuser.model.GithubFollowerItem
@@ -41,6 +43,8 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail){
 
     private lateinit var userHelper: UserHelper
 
+    private lateinit var uriWithId: Uri
+
     companion object {
         val TAG = UserDetailFragment::class.java.simpleName
     }
@@ -68,7 +72,6 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail){
         Log.d("listFollowerTest", "onViewCreated: ${listFollowerTest.size}")
         id_followers_user_detail.text = listFollowerTest.size.toString()
 
-
         val user1 = args.user
         id_login_user_detail.text = user1.login
         id_user_type_detail.text = user1.type
@@ -78,6 +81,8 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail){
         Glide.with(view)
             .load(user1.avatar_url)
             .into(id_profile_image_user_detail)
+
+        uriWithId = Uri.parse(CONTENT_URI.toString() + "/" + user1.id)
 
 
         setCurrentFragment(FollowingFragment2.newInstance(args.user.login.toString()))
@@ -109,17 +114,18 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail){
         values.put(DatabaseContract.UserColumns.TYPE, user1.type)
         
         fab_delete.setOnClickListener{
-            userHelper.deleteByLoginName(loginName.toString())
+            activity?.contentResolver?.delete(uriWithId, null, null )
+      //      userHelper.deleteByLoginName(loginName.toString())
             Toast.makeText(activity, "Deleted", Toast.LENGTH_SHORT).show()
             fab_add.show()
             fab_delete.hide()
         }
 
         fab_add.setOnClickListener {
-            userHelper.insert(values)
-            Log.d(TAG, "onViewCreated: ${userHelper.insert(values)}")
+            activity?.contentResolver?.insert(CONTENT_URI, values)
+       //     userHelper.insert(values)
+       //     Log.d(TAG, "onViewCreated: ${userHelper.insert(values)}")
             Snackbar.make(it, "Success Added", Snackbar.LENGTH_SHORT).show()
-            Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show()
             fab_add.hide()
             fab_delete.show()
         }
@@ -132,7 +138,7 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail){
 
         GlobalScope.launch(Dispatchers.Main) {
             val deferredUser = withContext(Dispatchers.IO) {
-                val cursor = userHelper.queryAll()
+                val cursor = activity?.contentResolver?.query(uriWithId, null,null,null,null)
                 MappingHelper.convertCursorToArrayList(cursor)
             }
 

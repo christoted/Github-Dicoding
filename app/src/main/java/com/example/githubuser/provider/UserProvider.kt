@@ -1,83 +1,81 @@
 package com.example.githubuser.provider
 
-import android.content.ContentProvider
-import android.content.ContentUris
-import android.content.ContentValues
-import android.content.UriMatcher
+import android.content.*
 import android.database.Cursor
 import android.net.Uri
-import com.example.githubuser.database.UserDAO
-import com.example.githubuser.database.UserDatabase
-import com.example.githubuser.model.GithubUserItem
+import com.example.githubuser.dbbasic.DatabaseContract.AUTHORITY
+import com.example.githubuser.dbbasic.DatabaseContract.UserColumns.Companion.CONTENT_URI
+import com.example.githubuser.dbbasic.DatabaseContract.UserColumns.Companion.TABLE_NAME
+import com.example.githubuser.dbbasic.UserHelper
 
 class UserProvider : ContentProvider() {
 
     companion object {
         private const val USER = 1
-
-        const val AUTHORITY = "com.example.githubuser"
-        val URI_MENU = Uri.parse("content://$AUTHORITY/users")
-
+        private const val USER_ID = 2
+        private lateinit var userHelper: UserHelper
         private val sUriMatcher = UriMatcher(UriMatcher.NO_MATCH)
 
-        init{
+        init {
             sUriMatcher.addURI(
                 AUTHORITY,
-                "users",
+                TABLE_NAME,
                 USER
             )
+
+            sUriMatcher.addURI(AUTHORITY, "$TABLE_NAME/#", USER_ID)
         }
 
     }
 
     override fun onCreate(): Boolean {
+        userHelper = UserHelper.getInstance(context as Context)
+        userHelper.open()
         return true
     }
-
-
-    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
-        TODO("Implement this to handle requests to delete one or more rows")
-    }
-
-    override fun getType(uri: Uri): String? {
-        TODO(
-            "Implement this to handle requests for the MIME type of the data" +
-                    "at the given URI"
-        )
-    }
-
-    override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        TODO()
-    }
-
 
     override fun query(
         uri: Uri, projection: Array<String>?, selection: String?,
         selectionArgs: Array<String>?, sortOrder: String?
     ): Cursor? {
-        val code = sUriMatcher.match(uri)
-        return if (code == USER) {
-            val context = context ?: return null
-            val userDAO: UserDAO = UserDatabase.invoke(context).getUserDAO()
-
-            val cursor : Cursor
-            cursor = if ( code == USER) {
-                userDAO.getAllSavedUsers() as Cursor
-            } else {
-                return null
-            }
-            cursor.setNotificationUri(context.contentResolver, uri)
-            cursor
-
-        } else {
-            throw IllegalArgumentException("Unknown URI: $uri")
+        return when (sUriMatcher.match(uri)) {
+            USER -> userHelper.queryAll()
+            USER_ID -> userHelper.queryById(uri.lastPathSegment.toString())
+            else -> null
         }
+    }
+
+    override fun insert(uri: Uri, values: ContentValues?): Uri? {
+        val added : Long = when (USER) {
+            sUriMatcher.match(uri) -> userHelper.insertForContentProvider(values)
+            else -> 0
+        }
+
+        context?.contentResolver?.notifyChange(CONTENT_URI, null)
+
+        return Uri.parse("$CONTENT_URI/$added")
+    }
+
+
+    override fun delete(uri: Uri, s: String?, strings: Array<String>?): Int {
+        val deleted: Int = when (USER_ID) {
+            sUriMatcher.match(uri) -> userHelper.deleteById(uri.lastPathSegment.toString())
+            else -> 0
+        }
+
+        context?.contentResolver?.notifyChange(CONTENT_URI, null)
+
+        return deleted
+    }
+
+    override fun getType(uri: Uri): String? {
+        return null
     }
 
     override fun update(
         uri: Uri, values: ContentValues?, selection: String?,
         selectionArgs: Array<String>?
     ): Int {
-        TODO("Implement this to handle requests to update one or more rows.")
+        return 0
     }
 }

@@ -19,7 +19,6 @@
         <provider
             android:name=".provider.UserProvider"
             android:authorities="com.example.githubuser"
-            android:enabled="true"
             android:exported="true"
             android:readPermission="com.example.githubuser.READ_DATABASE"
             android:writePermission="com.example.githubuser.WRITE_DATABASE">

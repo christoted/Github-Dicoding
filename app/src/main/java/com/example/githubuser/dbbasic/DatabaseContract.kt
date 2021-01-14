@@ -5,6 +5,9 @@ import android.provider.BaseColumns
 
 object DatabaseContract {
 
+    const val AUTHORITY = "com.example.githubuser"
+    const val SCHEME = "content"
+
     class UserColumns : BaseColumns {
 
         companion object {
@@ -13,7 +16,12 @@ object DatabaseContract {
             const val LOGIN = "login"
             const val AVATAR_URL = "avatar_url"
             const val TYPE = "type"
-        }
 
+            val CONTENT_URI: Uri = Uri.Builder().scheme(SCHEME)
+                .authority(AUTHORITY)
+                .appendPath(TABLE_NAME)
+                .build()
+
+        }
     }
 }
