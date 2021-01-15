@@ -1,5 +1,6 @@
 package com.example.githubuser.database
 
+import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.*
@@ -12,6 +13,7 @@ interface UserDAO {
 
     @Query("SELECT * FROM users")
     fun getAllSavedUsers() : LiveData<List<GithubUserItem>>
+
 
     @Delete
     suspend fun deleteSavedUser(githubUserItem: GithubUserItem)

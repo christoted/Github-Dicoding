@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ConsumerApp</string>
+    <string name="login_name">login_name</string>
+</resources>
