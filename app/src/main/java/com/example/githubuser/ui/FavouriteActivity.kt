@@ -111,7 +111,7 @@ class FavouriteActivity : AppCompatActivity(), UserAdapter.UserItemListener{
     }
 
     override fun onUserItemClick(Position: Int) {
-        TODO("Not yet implemented")
+
     }
 
 }
