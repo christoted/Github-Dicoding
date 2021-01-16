@@ -52,7 +52,7 @@ class FollowingFragment2 : Fragment() {
         Log.d("test-login", "onCreateView: $login")
 
         viewModel = (activity as MainActivity).viewModel
-        listFollowing.clear()
+//        listFollowing.clear()
         getTotalFollowing(login!!)
         followingAdapter = FollowFollowerAdapter(requireActivity(), listFollowing)
         setupRecyclerView()
