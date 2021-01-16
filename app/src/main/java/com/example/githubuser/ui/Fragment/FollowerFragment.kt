@@ -63,7 +63,6 @@ class FollowerFragment : Fragment(R.layout.fragment_follower) {
                         }
                         hideProgressBar()
                     }
-
                 }
             })
 

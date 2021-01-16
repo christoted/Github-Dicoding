@@ -115,7 +115,6 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail){
         
         fab_delete.setOnClickListener{
             activity?.contentResolver?.delete(uriWithId, null, null )
-      //      userHelper.deleteByLoginName(loginName.toString())
             Toast.makeText(activity, "Deleted", Toast.LENGTH_SHORT).show()
             fab_add.show()
             fab_delete.hide()
@@ -123,8 +122,6 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail){
 
         fab_add.setOnClickListener {
             activity?.contentResolver?.insert(CONTENT_URI, values)
-       //     userHelper.insert(values)
-       //     Log.d(TAG, "onViewCreated: ${userHelper.insert(values)}")
             Snackbar.make(it, "Success Added", Snackbar.LENGTH_SHORT).show()
             fab_add.hide()
             fab_delete.show()
@@ -147,7 +144,7 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail){
             if ( users.size > 0) {
                 listUser.addAll(users)
             } else {
-                Toast.makeText(activity, "Empty", Toast.LENGTH_SHORT).show()
+
             }
 
             for ( i in listUser) {
@@ -166,31 +163,17 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail){
             }
         }
 
-//        viewModel.getAllFavourite().observe(viewLifecycleOwner, Observer {
-//            listUser.addAll(it)
-//
-//            for (i in listUser) {
-//                if (loginName == i.login) {
-//                    Log.d(
-//                        "TEST123",
-//                        "checkSavedUser BAWAH: SAVED $loginName + ${i.login.toString()}"
-//                    )
-//                    fab.hide()
-//                    fab_delete.show()
-//                    break
-//                } else {
-//                    fab_delete.hide()
-//                    fab.show()
-//                }
-//            }
-//        })
-
-
-
     }
 
+//    private fun setCurrentFragment(fragment: Fragment) =
+//        childFragmentManager.beginTransaction().apply {
+//            replace(R.id.flFragment, fragment)
+//            args.user.login
+//            commit()
+//        }
+
     private fun setCurrentFragment(fragment: Fragment) =
-        childFragmentManager.beginTransaction().apply {
+        fragmentManager?.beginTransaction()?.apply {
             replace(R.id.flFragment, fragment)
             args.user.login
             commit()
