@@ -7,15 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubuser.R
 import com.example.githubuser.adapter.FollowFollowerAdapter
 import com.example.githubuser.model.GithubFollowerItem
+import com.example.githubuser.ui.Fragment.UserDetailFragment.Companion.TAG
 import com.example.githubuser.ui.MainActivity
 import com.example.githubuser.ui.ViewModel.UserViewModel
 import com.example.githubuser.util.Resource
 import kotlinx.android.synthetic.main.fragment_following.*
 import kotlinx.android.synthetic.main.fragment_user_list.*
+import kotlinx.coroutines.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -52,8 +58,16 @@ class FollowingFragment2 : Fragment() {
         Log.d("test-login", "onCreateView: $login")
 
         viewModel = (activity as MainActivity).viewModel
-//        listFollowing.clear()
-        getTotalFollowing(login!!)
+        listFollowing.clear()
+        showProgressBar()
+
+        GlobalScope.launch(Dispatchers.IO) {
+            delay(500)
+            withContext(Dispatchers.Main) {
+                getTotalFollowing(login!!)
+            }
+        }
+
         followingAdapter = FollowFollowerAdapter(requireActivity(), listFollowing)
         setupRecyclerView()
 

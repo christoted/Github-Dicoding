@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/lightGray"
             android:inputType="textEmailAddress"
-            android:text="christoted" />
+            android:text="ang" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <FrameLayout
