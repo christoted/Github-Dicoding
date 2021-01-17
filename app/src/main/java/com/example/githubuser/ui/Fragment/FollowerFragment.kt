@@ -14,6 +14,7 @@ import com.example.githubuser.ui.MainActivity
 import com.example.githubuser.ui.ViewModel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_follower.*
 import kotlinx.android.synthetic.main.fragment_following.*
+import kotlinx.coroutines.*
 
 private const val ARG_PARAM1 = "param1"
 
@@ -39,8 +40,15 @@ class FollowerFragment : Fragment(R.layout.fragment_follower) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = (activity as MainActivity).viewModel
+        showProgressBar()
+        GlobalScope.launch(Dispatchers.IO) {
+            delay(500)
+            withContext(Dispatchers.Main) {
+                getTotalFollower(login!!)
+            }
+        }
 
-        getTotalFollower(login!!)
+
         followerAdapter = FollowFollowerAdapter(requireActivity(), listFollower)
         setupRecyclerView()
 
