@@ -56,7 +56,7 @@ class UserDetailFragment : Fragment(R.layout.fragment_user_detail){
         userHelper = UserHelper.getInstance(activity!!)
         userHelper.open()
 
-        viewModel = (activity as MainActivity).viewModel
+//        viewModel = (activity as MainActivity).viewModel
 
         listRepoTest = arguments?.getParcelableArrayList<GithubRepoItem>("listRepo") ?: listRepo
         Log.d("listRepoTest", "onViewCreated: ${listRepoTest.size}")
